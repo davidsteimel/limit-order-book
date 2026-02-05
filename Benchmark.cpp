@@ -5,7 +5,7 @@
 #include "OrderGenerator.hpp"
 
 static void BM_OrderMatching(benchmark::State& state) {
-    ObjectPool<Order> pool(100000); 
+    ObjectPool<Order> pool(1000000); 
     OrderBook book;
     OrderGenerator gen;
 

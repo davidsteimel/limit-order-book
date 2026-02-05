@@ -11,6 +11,12 @@ The system utilizes a custom **Object Pool** to eliminate runtime memory allocat
 - **Optimized Algorithms:** Uses `std::lower_bound` (Binary Search) for efficient order insertion (O(log n)).
 - **High Performance:** Achieves ~2.8 microseconds (µs) "Time-to-Match" on consumer hardware (Apple Silicon).
 
+* **Limit Order Book:** Supports Buy (Bid) and Sell (Ask) orders with _Price-Time Priority_.
+* **Zero-Allocation Runtime:** Custom `ObjectPool<T>` allocator prevents heap fragmentation and Garbage Collection pauses.
+* **Vector Optimization:** "Flipped" book layout allows for O(1) removal of best orders (`pop_back`).
+* **Continuous Matching:** Immediate matching upon order arrival.
+* **High Performance:** Achieves **~1.5 microseconds (µs)** "Time-to-Match" on consumer hardware (Apple Silicon).
+
 ## Tech Stack
 
 - **Language:** C++20
@@ -22,11 +28,11 @@ The system utilizes a custom **Object Pool** to eliminate runtime memory allocat
 
 Measured using Google Benchmark on Apple Silicon (M-Series).
 
-| Benchmark       | Time (CPU)             | Iterations |
-| :-------------- | :--------------------- | :--------- |
-| **1024 Orders** | **2,808 ns** (~2.8 µs) | 570,427    |
-| **4096 Orders** | **6,990 ns** (~6.9 µs) | 686,127    |
-| **8192 Orders** | **5,400 ns** (~5.4 µs) | 574,387    |
+| Benchmark       | Time (CPU)              | Iterations |
+| :-------------- | :---------------------  | :--------- |
+| **1024 Orders** | **1,482 ns** (~1.48 µs) | 1,000,000  |
+| **4096 Orders** | **2,561 ns** (~2.56 µs) | 1,383,864  |
+| **8192 Orders** | **2,446 ns** (~2.45 µs) | 1,334,681  |
 
 > **Note:** Latency figures include the overhead of the custom memory pool management and the matching logic itself.
 

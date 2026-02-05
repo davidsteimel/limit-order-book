@@ -7,10 +7,10 @@ OrderBook:: OrderBook()
 {} 
 
 auto compareBids = [](Order* a, Order* b) {
-    return a->price > b->price;
+    return a->price < b->price;
 };
 auto compareAsks = [](Order* a, Order* b) {
-    return a->price < b->price;
+    return a->price > b->price;
 };
 
 void OrderBook::addOrder(Order* order) {
@@ -26,9 +26,9 @@ void OrderBook::addOrder(Order* order) {
 
 void OrderBook::match(ObjectPool<Order>& pool) {
     
-    while(!bids.empty() && !asks.empty() && bids.front()->price >= asks.front()->price){
-        Order* bid = bids.front();
-        Order* ask = asks.front();
+    while(!bids.empty() && !asks.empty() && bids.back()->price >= asks.back()->price){
+        Order* bid = bids.back();
+        Order* ask = asks.back();
 
         uint32_t quantity = std::min(bid->quantity, ask->quantity);
         // std::cout << "Trade: Price: " << ask->price << " Quantity: " << quantity << std::endl;
@@ -37,17 +37,18 @@ void OrderBook::match(ObjectPool<Order>& pool) {
                   << " Quantity: " << quantity 
                   << " (BidID: " << bid->id << " vs AskID: " << ask->id << ")" 
                   << std::endl; */
+        trades.emplace_back(bid->id, ask->id, ask->price, quantity);
 
         bid->quantity -= quantity;
         ask->quantity -= quantity;
 
         if(bid->quantity == 0){
-            bids.erase(bids.begin()); 
+            bids.pop_back();
             pool.deallocate(bid);
         }
 
         if(ask->quantity == 0){
-            asks.erase(asks.begin());
+            asks.pop_back();
             pool.deallocate(ask);
         }
     }
