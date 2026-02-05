@@ -27,7 +27,7 @@ public:
         return &allocated_blocks[index];
     }
     void deallocate(T* objectPtr) {
-        uint32_t index = objectPtr - allocated_blocks.data();
+        std::size_t index = objectPtr - allocated_blocks.data();
         free_indices.push(index);
     }
 };

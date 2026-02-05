@@ -1,8 +1,8 @@
 #include "OrderGenerator.hpp"
 OrderGenerator::OrderGenerator() 
     : engine(std::random_device{}()),
-      priceDist(10000, 50000),
-      quantityDist(1, 1000),
+      priceDist(99, 101), 
+      quantityDist(1, 100),
       sideDist(0, 1),
       nextId(1)
 {}

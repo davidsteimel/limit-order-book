@@ -1,23 +1,32 @@
 #include <iostream>
+#include "ObjectPool.hpp"
+#include "OrderBook.hpp"
 #include "OrderGenerator.hpp"
-
-std::ostream& operator<<(std::ostream& os, const Order& order) {
-    os << "Order[" << order.id << "] " 
-       << (order.side == Side::Buy ? "BUY " : "SELL ")
-       << order.quantity << " @ " << order.price;
-    return os;
-}
+#include "Order.hpp"
 
 int main() {
-    std::cout << "--- High Frequency Order Book Simulation ---" << std::endl;
-
+    ObjectPool<Order> pool(10);
     OrderGenerator gen;
+    std::cout << "Created ObjectPool with 10 elements." << std::endl;
+    OrderBook book;
 
-    for(int i = 0; i < 5; i++) {
-        Order o = gen.generate();
-        std::cout << o << std::endl; 
+
+    for (std:: size_t i = 0; i < 50; i++){
+        Order* memory = pool.allocate();
+
+        if (memory != nullptr) {
+            Order data = gen.generate();
+            *memory = data;
+            std::cout << "Order created: " << data.id 
+                      << " Side: " << (int)data.side
+                      << " Price: " << data.price 
+                      << " Qty: " << data.quantity << std::endl;
+            book.addOrder(memory);
+            book.match(pool);
+        } else {
+            std::cout << "Pool is full! Cannot create Order " << i << std::endl;
+        }
     }
-
-    std::cout << "--- Done ---" << std::endl;
     return 0;
 }
+    
